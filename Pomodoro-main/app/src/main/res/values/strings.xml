@@ -2,4 +2,7 @@
     <string name="app_name">Pomodoro</string>
     <string name="default_time_display">00:00:00</string>
     <string name="startButtonText">Start</string>
+    <string name="_30min">30min</string>
+    <string name="_60min">60min</string>
+    <string name="_120min">120min</string>
 </resources>
