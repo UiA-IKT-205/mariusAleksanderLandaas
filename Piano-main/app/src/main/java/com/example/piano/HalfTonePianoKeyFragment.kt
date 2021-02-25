@@ -7,15 +7,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.example.piano.databinding.FragmentFullTonePianoKeyBinding
-import com.example.piano.databinding.FragmentPianoBinding
+import com.example.piano.databinding.FragmentHalfTonePianoKeyBinding
 import kotlinx.android.synthetic.main.fragment_full_tone_piano_key.view.*
-import org.w3c.dom.Notation
+import kotlinx.android.synthetic.main.fragment_half_tone_piano_key.view.*
 
 
-class FullTonePianoKeyFragment : Fragment() {
+class HalfTonePianoKeyFragment : Fragment() {
 
-
-    private var _binding: FragmentFullTonePianoKeyBinding? = null
+    private var _binding: FragmentHalfTonePianoKeyBinding? = null
     private val binding get() = _binding!!
     private lateinit var note:String
 
@@ -31,17 +30,17 @@ class FullTonePianoKeyFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentFullTonePianoKeyBinding.inflate(inflater)
+        _binding = FragmentHalfTonePianoKeyBinding.inflate(inflater)
         val view = binding.root
 
-        view.fullToneKey.setOnTouchListener(object: View.OnTouchListener{
+        view.halfToneKey.setOnTouchListener(object: View.OnTouchListener{
 
             var startTime = 0
 
             override fun onTouch(v: View?, event: MotionEvent?): Boolean{
                 when(event?.action){
-                    MotionEvent.ACTION_DOWN -> this@FullTonePianoKeyFragment.onKeyDown?.invoke(note)
-                    MotionEvent.ACTION_UP -> this@FullTonePianoKeyFragment.onKeyUp?.invoke(note)
+                    MotionEvent.ACTION_DOWN -> this@HalfTonePianoKeyFragment.onKeyDown?.invoke(note)
+                    MotionEvent.ACTION_UP -> this@HalfTonePianoKeyFragment.onKeyUp?.invoke(note)
                 }
                 return true
             }
@@ -52,10 +51,10 @@ class FullTonePianoKeyFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(note: String) =
-            FullTonePianoKeyFragment().apply {
-                arguments = Bundle().apply {
-                    putString("NOTE", note)
+                HalfTonePianoKeyFragment().apply {
+                    arguments = Bundle().apply {
+                        putString("NOTE", note)
+                    }
                 }
-            }
     }
 }

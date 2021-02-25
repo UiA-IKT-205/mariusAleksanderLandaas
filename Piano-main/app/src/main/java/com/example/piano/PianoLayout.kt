@@ -10,14 +10,18 @@ import kotlinx.android.synthetic.main.fragment_piano.view.*
 
 class PianoLayout : Fragment() {
 
+    //FULL TONE
+
     private var _binding:FragmentPianoBinding? = null
     private val binding get() = _binding!!
 
     private val fullTones = listOf("C","D","E","F","G","A","B","C2","D2","E2","F2","G2")
 
+    //HALF TONE
+    private val halfTones = listOf("HC","HD","HF","HG","HA")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         }
 
 
@@ -28,6 +32,7 @@ class PianoLayout : Fragment() {
 
         val fn = childFragmentManager
         val ft = fn.beginTransaction()
+        val ht = fn.beginTransaction()
 
 
         fullTones.forEach { orgNoteValue ->
@@ -42,6 +47,19 @@ class PianoLayout : Fragment() {
             ft.add(view.pianoKeys.id,fullTonePianoKey,"note_$orgNoteValue")
         }
 
+        halfTones.forEach { orgNoteValue ->
+            val halfTonePianoKey = HalfTonePianoKeyFragment.newInstance(orgNoteValue)
+
+            halfTonePianoKey.onKeyDown = {
+                println("Piano key down $it")
+            }
+            halfTonePianoKey.onKeyUp ={
+                println("Piano key up $it")
+            }
+            ht.add(view.pianoKeys.id,halfTonePianoKey,"note_$orgNoteValue")
+        }
+
+        ht.commit()
         ft.commit()
 
 
