@@ -1,12 +1,16 @@
 package com.example.piano
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.piano.data.Note
 import com.example.piano.databinding.FragmentPianoBinding
 import kotlinx.android.synthetic.main.fragment_piano.view.*
+import java.io.File
+import java.io.FileOutputStream
 
 class PianoLayout : Fragment() {
 
@@ -19,6 +23,8 @@ class PianoLayout : Fragment() {
 
     //HALF TONE
     private val halfTones = listOf("HC","HD","HF","HG","HA")
+
+    private var score:MutableList<Note> = mutableListOf<Note>() // Score == Noteark?
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,24 +43,37 @@ class PianoLayout : Fragment() {
 
         fullTones.forEach { orgNoteValue ->
             val fullTonePianoKey = FullTonePianoKeyFragment.newInstance(orgNoteValue)
+            var startPlay:Long = 0
 
-            fullTonePianoKey.onKeyDown = {
-            println("Piano key down $it")
+            fullTonePianoKey.onKeyDown = { note ->
+            startPlay = System.nanoTime()
+            println("Piano key down $note")
             }
+
             fullTonePianoKey.onKeyUp ={
-                    println("Piano key up $it")
+                var endPlay = System.nanoTime()
+                val note = Note(it,startPlay,endPlay)
+                score.add(note)
+                println("Piano key up $note")
+
             }
             ft.add(view.pianoKeys.id,fullTonePianoKey,"note_$orgNoteValue")
         }
 
         halfTones.forEach { orgNoteValue ->
             val halfTonePianoKey = HalfTonePianoKeyFragment.newInstance(orgNoteValue)
+            var startPlay:Long = 0
 
-            halfTonePianoKey.onKeyDown = {
-                println("Piano key down $it")
+
+            halfTonePianoKey.onKeyDown = { note ->
+                startPlay = System.nanoTime()
+                println("Piano key down $note")
             }
             halfTonePianoKey.onKeyUp ={
-                println("Piano key up $it")
+                var endPlay = System.nanoTime()
+                val note = Note(it,startPlay,endPlay)
+                println("Piano key up $note")
+                score.add(note)
             }
             ht.add(view.pianoKeys.id,halfTonePianoKey,"note_$orgNoteValue")
         }
@@ -63,6 +82,22 @@ class PianoLayout : Fragment() {
         ft.commit()
 
 
+        view.saveScoreBt.setOnClickListener{
+            var fileName = view.fileNameTextEdit.text.toString()
+
+            val path = this.activity?.getExternalFilesDir(null)
+
+
+
+            if(fileName.isNotEmpty() && path != null){
+                fileName = "$fileName.musikk"
+                FileOutputStream(File(path,fileName),true).bufferedWriter().use{ writer ->
+                score.forEach{
+                    writer.write("${it.toString()}\n")
+                    }
+                }
+            }
+        }
 
         // Inflate the layout for this fragment
         return view
